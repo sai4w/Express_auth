@@ -14,12 +14,23 @@
 
   <div class="display" style="background-color: red;"></div>
   <h1>Users</h1>
-  <ul></ul>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Username</th>
+        <th scope="col">Role</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
   <button class="logout"> <a href="/logout" class="underline">Log Out</a></button>
 </div>
 
   <script>
-    const ul = document.querySelector('ul')
+    const ul = document.querySelector('tbody')
     const display = document.querySelector('.display')
 
     const getUsers = async () => {
@@ -27,7 +38,7 @@
       const data = await res.json()
       data.user.map((mappedUser) => {
         if(mappedUser.username !== 'admin'){
-          let li = `<li> <b>Username</b> => ${mappedUser.username} <br> <b>Role</b> => ${mappedUser.role} </li> <button class="edit">Edit Role</button> <button class="delete">Delete User</button>`
+          let li = `<tr><th scope="row">*</th><td>${mappedUser.username}</td><td>${mappedUser.role}</td><td> <button class="edit">Edit Role</button></td><td> <button class="delete">Delete User</button></td></tr>`
           ul.innerHTML += li
         }else{
           return null
@@ -38,7 +49,7 @@
         editRole.forEach((button, i) => {
           button.addEventListener('click', async() => {
             display.textContent= ''
-            const id = data.user[i+1].id
+            const id = data.user[i].id
             const res = await fetch('/api/auth/update', {
               method: 'PUT',
               body: JSON.stringify({ role: 'admin', id}),
@@ -56,7 +67,7 @@
         deleteUser.forEach((button, i)=> {
           button.addEventListener('click', async ()=> {
             display.textContent =''
-            const id = data.user[i+1].id
+            const id = data.user[i].id
             const res = await fetch('/api/auth/deleteUser', {
               method: 'DELETE',
               body: JSON.stringify({id}),
